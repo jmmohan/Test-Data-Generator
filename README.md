@@ -62,4 +62,4 @@ Unit tests live in `__tests__/` (left for you to expand).
 
 ## License
 
-MIT © 2023 AT&T (internal prototype) 
+MIT © 2023 
