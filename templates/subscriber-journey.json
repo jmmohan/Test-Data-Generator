@@ -1,0 +1,57 @@
+{
+  "name": "subscriber-journey",
+  "description": "Simulated subscriber lifecycle events across AT&T products (subscribe, upgrade, cancel, etc.)",
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "subscriberId": {
+        "type": "string",
+        "faker": "datatype.uuid"
+      },
+      "timestamp": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "action": {
+        "type": "string",
+        "enum": [
+          "subscribe",
+          "activate",
+          "suspend",
+          "reactivate",
+          "upgrade",
+          "cancel"
+        ]
+      },
+      "productType": {
+        "type": "string",
+        "enum": ["wireless", "internet", "tv", "phone"]
+      },
+      "planName": {
+        "type": ["string", "null"],
+        "faker": "commerce.productName"
+      },
+      "price": {
+        "type": ["string", "null"],
+        "faker": "commerce.price"
+      },
+      "channel": {
+        "type": "string",
+        "enum": ["web", "mobile_app", "store", "call_center"]
+      },
+      "contractTermMonths": {
+        "type": ["integer", "null"],
+        "minimum": 0,
+        "maximum": 36,
+        "faker": "datatype.number"
+      },
+      "status": {
+        "type": "string",
+        "enum": ["success", "failed", "pending"]
+      }
+    },
+    "required": ["subscriberId", "timestamp", "action", "productType", "channel"],
+    "additionalProperties": false
+  }
+} 

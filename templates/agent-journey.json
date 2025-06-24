@@ -1,0 +1,53 @@
+{
+  "name": "agent-journey",
+  "description": "Simulated contact-center agent journey handling customer interactions (voice/chat/store)",
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "agentId": {
+        "type": "string",
+        "faker": "datatype.uuid"
+      },
+      "ticketId": {
+        "type": "string",
+        "faker": "datatype.uuid"
+      },
+      "timestamp": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "step": {
+        "type": "string",
+        "enum": [
+          "receive_call",
+          "authenticate_customer",
+          "troubleshoot",
+          "escalate",
+          "resolve",
+          "follow_up"
+        ]
+      },
+      "channel": {
+        "type": "string",
+        "enum": ["voice", "chat", "store"]
+      },
+      "outcome": {
+        "type": ["string", "null"],
+        "enum": ["resolved", "unresolved", "pending", null]
+      },
+      "handleTimeMinutes": {
+        "type": "number",
+        "minimum": 1,
+        "maximum": 60,
+        "faker": "datatype.number"
+      },
+      "customerSentiment": {
+        "type": ["string", "null"],
+        "enum": ["positive", "neutral", "negative", null]
+      }
+    },
+    "required": ["agentId", "ticketId", "timestamp", "step", "channel"],
+    "additionalProperties": false
+  }
+} 

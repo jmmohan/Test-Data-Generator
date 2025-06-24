@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCP Test Data Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    label { display: block; margin-top: 1rem; }
+    input, select { padding: 0.5rem; margin-top: 0.25rem; }
+    button { margin-top: 1.5rem; padding: 0.75rem 1.25rem; }
+    #status { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>MCP Test Data Generator</h1>
+
+  <form id="generate-form">
+    <label>
+      Journey Template
+      <select id="template-select" name="templateName"></select>
+    </label>
+    <label>
+      Volume
+      <input type="number" id="volume-input" name="volume" value="10" min="1" />
+    </label>
+    <label>
+      Format
+      <select id="format-select" name="format">
+        <option value="csv">CSV</option>
+      </select>
+    </label>
+    <button type="submit">Generate & Download</button>
+  </form>
+
+  <div id="status"></div>
+
+  <script>
+    async function fetchTemplates() {
+      const res = await fetch('/api/templates');
+      const templates = await res.json();
+      const select = document.getElementById('template-select');
+      templates.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.name;
+        opt.textContent = `${t.name} – ${t.description || ''}`;
+        select.appendChild(opt);
+      });
+    }
+
+    document.getElementById('generate-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const templateName = form.templateName.value;
+      const volume = parseInt(form.volume.value, 10);
+      const format = form.format.value;
+
+      const statusEl = document.getElementById('status');
+      statusEl.textContent = 'Generating...';
+      try {
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ templateName, volume, format })
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.message || 'Failed to generate data');
+        }
+
+        const blob = await res.blob();
+        const filename = res.headers.get('Content-Disposition').split('filename="')[1].replace('"', '');
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        statusEl.textContent = 'Download started.';
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = 'Error: ' + err.message;
+      }
+    });
+
+    fetchTemplates();
+  </script>
+</body>
+</html> 

@@ -1,0 +1,36 @@
+{
+  "name": "user-journey",
+  "description": "Simulated user journey through login, browse and purchase flows",
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "userId": {
+        "type": "string",
+        "faker": "datatype.uuid"
+      },
+      "timestamp": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "step": {
+        "type": "string",
+        "enum": ["login", "browse", "add_to_cart", "checkout", "confirmation"]
+      },
+      "channel": {
+        "type": "string",
+        "enum": ["web", "mobile", "ivr", "sms"]
+      },
+      "productSku": {
+        "type": ["string", "null"],
+        "faker": "commerce.product"
+      },
+      "amount": {
+        "type": ["string", "null"],
+        "faker": "finance.amount"
+      }
+    },
+    "required": ["userId", "timestamp", "step", "channel"],
+    "additionalProperties": false
+  }
+} 
